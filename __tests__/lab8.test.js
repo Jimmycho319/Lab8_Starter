@@ -26,8 +26,10 @@ describe('Basic user flow for Website', () => {
     console.log(`Checking product item 1/${prodItems.length}`);
     // Grab the .data property of <product-items> to grab all of the json data stored inside
     data = await prodItems[0].getProperty('data');
+    //console.log(data);
     // Convert that property to JSON
     plainValue = await data.jsonValue();
+    console.log(plainValue);
     // Make sure the title, price, and image are populated in the JSON
     if (plainValue.title.length == 0) { allArePopulated = false; }
     if (plainValue.price.length == 0) { allArePopulated = false; }
@@ -38,6 +40,14 @@ describe('Basic user flow for Website', () => {
     // TODO - Step 1
     // Right now this function is only checking the first <product-item> it found, make it so that
     // it checks every <product-item> it found
+    for (let i=0; i < prodItems.length; i++) {
+      data = await prodItems[i].getProperty('data');
+      plainValue = await data.jsonValue();
+      if (plainValue.title.length == 0) { allArePopulated = false; }
+      if (plainValue.price.length == 0) { allArePopulated = false; }
+      if (plainValue.image.length == 0) { allArePopulated = false; }
+      expect(allArePopulated).toBe(true);
+    }
 
   }, 10000);
 
@@ -50,6 +60,13 @@ describe('Basic user flow for Website', () => {
     // Grab the shadowRoot of that element (it's a property), then query a button from that shadowRoot.
     // Once you have the button, you can click it and check the innerText property of the button.
     // Once you have the innerText property, use innerText.jsonValue() to get the text value of it
+    //const singleProd = await page.$('product-item');
+    const prodItems = await page.$$('product-item');
+    let myshadow = await prodItems[0].getProperty('shadowRoot');
+    let button = await myshadow.$('button');
+    await button.click();
+    console.log("inside button", button);
+    //if ()
   }, 2500);
 
   // Check to make sure that after clicking "Add to Cart" on every <product-item> that the Cart
